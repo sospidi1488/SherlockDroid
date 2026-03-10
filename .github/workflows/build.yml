@@ -2,11 +2,11 @@ name: Build APK
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build with Buildozer
-        uses: Luka967/buildozer-action@v1.2.2
+        uses: Peter-Smyth/buildozer-action@v1
         with:
           buildozer_version: master
           
