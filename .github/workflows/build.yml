@@ -2,21 +2,17 @@ name: Build APK
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-          pip3 install --user --upgrade buildozer cython virtualenv
       - name: Build with Buildozer
-        run: |
-          export PATH=$PATH:$HOME/.local/bin
-          yes | buildozer android debug
+        uses: ArtemSerebrennkov/buildozer-action@v1
+        with:
+          buildozer_version: stable
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Sherlock-App
           path: bin/*.apk
-          
+
+        
