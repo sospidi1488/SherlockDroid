@@ -32,5 +32,6 @@ class SherlockApp(App):
             self.result_label.text = "Ошибка: введите ник!"
 
 if __name__ == '__main__':
-    SherlockApp().run()
+    SherlockApp().run() 
+    
   
