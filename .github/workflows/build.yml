@@ -5,8 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --upgrade pip
+          pip3 install buildozer cython==0.29.33
       - name: Build with Buildozer
-        uses: Peter-Smyth/buildozer-action@v1
+        run: |
+          yes | buildozer android debug
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          buildozer_version: master
+          name: package
+          path: bin/*.apk
           
