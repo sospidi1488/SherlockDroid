@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build with Buildozer
-        uses: ArtemSerebrennkov/buildozer-action@v1
+        uses: jrelemo/buildozer-action@v1
         with:
           buildozer_version: stable
       - name: Upload APK
@@ -14,5 +14,4 @@ jobs:
         with:
           name: Sherlock-App
           path: bin/*.apk
-
-        
+          
