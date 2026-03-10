@@ -1,26 +1,35 @@
-[app]
-title = Sherlock Droid
-package.name = sherlock_osint
-package.domain = org.test
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-version = 0.1
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
 
-# Добавил библиотеку requests, она нужна для работы Sherlock
-requirements = python3,kivy,requests,urllib3,charset-normalizer,idna
+      - name: Install System Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --user --upgrade buildozer cython==0.29.33 virtualenv
 
-orientation = portrait
-fullscreen = 0
+      - name: Pre-install Android SDK/NDK
+        run: |
+          # Создаем структуру папок заранее, чтобы Buildozer не запутался
+          mkdir -p ~/.buildozer/android/platform
+          export PATH=$PATH:$HOME/.local/bin
+          # Эта команда заставит его только скачать нужное, не начиная билд
+          buildozer android sdk_update || true
 
-# Настройки сборки
-android.archs = arm64-v8a, armeabi-v7a
-android.api = 31
-android.minapi = 21
-android.sdk = 31
-android.ndk = 25b
-android.accept_sdk_license = True
-android.allow_backup = True
+      - name: Build with Buildozer
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          # Используем "интерактивный" ввод "yes", чтобы пройти все лицензии
+          yes | buildozer android debug
+        continue-on-error: false
 
-[buildozer]
-log_level = 2
-warn_on_root = 1
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sherlock-App
+          path: bin/*.apk
+          
